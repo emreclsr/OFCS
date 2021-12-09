@@ -1,0 +1,1 @@
+bash swanrun -input swn_2021-05-21 -omp 16

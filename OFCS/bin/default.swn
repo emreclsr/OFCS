@@ -1,0 +1,35 @@
+$************************************** HEADING *************************************************
+PROJ  'BS' 'xxxx' 'nested'
+$****************************************** MODEL INPUT ******************************************
+SET CARTesian
+MODE NONSTATIONARY TWODimensional
+COORDinates SPHErical
+$
+CGRID UNSTRUCTURED CIRCLE MDC=36 FLOW=0.04 FHIGH=0.625 MSC=30
+READ UNSTRUCTURED
+$
+INPgrid WInd REGular -7 29 0. 392 152 0.125 0.125  &
+NONSTATionary 11111111:222222 1 hr 33333333:444444
+READinp WInd 1. '/mnt/d/OFCStest/variables/wnd/ERA5_1996.wnd' 2 0 FREE
+$
+$************************************* BOUNDARY & INITIAL CONDITIONS **************************************
+INITIAL HOTSTART '/mnt/d/OFCStest/variables/hot/00000000.hot'
+$****************************************** PHYSICA *********************************************
+GEN3 KOMEN AGROW
+WCAP KOMEN delta=1
+QUAD iquad=2 lambda=0.250000 Cnl4=3.00000e+07
+BREA constant alpha=1.0 gamma=0.73
+FRICTION JONSWAP CFJON=0.038
+LIMITER ursell=10.0000 qb=1.00000
+$************************************ NUMERIEKE PARAMETERS ***************************************
+PROP BSBT
+NUM STOPC 0.00 0.01 0.001 101 NONSTAT mxitns=1
+$ ************************************ BLOCK UITVOER  ********************************************
+BLOCK 'COMPGRID' NOHEADER '/mnt/d/OFCStest/output/spatial.nc' LAY 4 DEP HS TMM10 TM01 TM02 TPS DIR WIND &
+1. OUTPUT 00000000:000000 30 min
+$ ******************** TEST UITVOER VOOR MEETLOCATIES ********************************************
+TEST 1,0
+$ ******************** LOCK-UP ********************************************
+COMPUTE NONSTat 00000000:000000 30 min 99999999:999999
+HOTFILE '/mnt/d/OFCStest/variables/hot/99999999.hot'
+STOP
